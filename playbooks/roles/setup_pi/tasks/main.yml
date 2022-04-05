@@ -1,0 +1,24 @@
+---
+- block:
+    - name: Copy pihole_config
+      copy:
+        src: pihole_config
+        dest: /etc/pihole/setupVars.conf
+      register: pihole_conf
+
+    - name: Create pihole-FTL.conf
+      copy:
+        content: ""
+        dest: /etc/pihole/pihole-FTL.conf
+      register: ftl_conf
+    - block:
+        # TODO idempotency
+        - name: Install pihole
+          shell: curl -L https://install.pi-hole.net | bash --unattended
+
+        # TODO idempotency
+        - name: Set pihole password
+          shell: pihole -a -p pihole
+      when: pihole_conf.changed or ftl_conf.changed
+
+  become: yes

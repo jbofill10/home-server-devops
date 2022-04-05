@@ -1,0 +1,19 @@
+- hosts: "{{ target_host }}"
+  remote_user: "{{ 'pi' if target_host == 'pi' else 'root' }}"
+  tasks:
+    - name: Setup software depdendencies
+      include_role:
+        name: configure_software
+
+    - name: Setup Raspberry PI
+      include_role:
+        name: setup_pi
+      when: target_host == 'pi'
+
+    # Temporary become block :P
+    - block:
+        - name: Setup Server
+          include_role:
+            name: setup_server
+          when: target_host == 'localhost'
+      become: yes

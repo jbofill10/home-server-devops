@@ -1,0 +1,13 @@
+---
+
+- name: Install required softwares with apt
+  apt:
+    name: "{{ server_required_software }}"
+    state: latest
+  become: yes
+
+- name: Install required softwares with pip
+  pip:
+    name: "{{ server_required_pip_modules }}"
+    state: latest
+  become: yes

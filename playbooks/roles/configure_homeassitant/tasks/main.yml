@@ -1,0 +1,39 @@
+- name: Create Home Assistant directories
+  file:
+    path: "{{ item }}"
+    owner: root
+    group: root
+    mode: 0600
+    state: directory
+  loop: "{{ home_assistant_dirs }}"
+
+- name: Download HACS
+  get_url:
+    url: https://get.hacs.xyz
+    dest: /root/home_assistant/setup_hacs.sh
+  register: hacs_downloaded
+
+- name: Run HACS setup script
+  shell:
+    cmd: bash setup_hacs.sh
+    chdir: /root/home_assistant
+  when: hacs_downloaded.changed
+
+- name: Clone localtuya component
+  git:
+    repo: https://github.com/rospogrigio/localtuya.git
+    dest: /root/home_assistant/custom_components/localtuya
+  register: local_tuya
+
+- name: Create Home Assistant Container
+  docker_container:
+    name: home_assistant
+    image: "{{ home_assistant_image }}"
+    ports: 8123
+    volumes:
+      - /root/home_assistant:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart_policy: unless-stopped
+    network_mode: host
+    state: started
+    restart: "{{ 'yes' if local_tuya.changed else 'no' }}"

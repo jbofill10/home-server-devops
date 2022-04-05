@@ -1,0 +1,3 @@
+home_assistant_image: ghcr.io/home-assistant/home-assistant:stable
+container_time_zone: America/New_York
+home_assistant_dirs: [ /root/home_assistant, /root/home_assistant/custom_components, /root/home_assistant/custom_components/localtuya ]

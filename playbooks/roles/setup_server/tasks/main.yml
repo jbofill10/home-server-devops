@@ -1,0 +1,4 @@
+
+- name: Configure Home Assistant
+  include_role:
+    name: configure_homeassitant

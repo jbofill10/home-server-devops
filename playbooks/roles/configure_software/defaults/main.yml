@@ -1,0 +1,9 @@
+---
+host_name: "{{ 'server' if target_host == 'localhost' else target_host }}"
+
+server_required_pip_modules:
+  - docker-py
+
+server_required_software:
+  - docker.io
+  - python3.8
